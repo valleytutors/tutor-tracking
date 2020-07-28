@@ -28,6 +28,8 @@ TutorRow.indexes = tutorIndexes
 # print("Loading Tutors")
 for i in range(1, len(tutorForm)):
 	rowRaw = tutorForm[i]
+	if not rowRaw[0]:
+		continue
 	row = TutorRow(rowRaw, i)
 	tutorRows.append(row)
 	# print(f'Loaded an entry for {row.name} filled at {rowRaw[0]}')
@@ -37,6 +39,8 @@ TuteeRow.indexes = tuteeIndexes
 # print("Loading Tutees")
 for i in range(1, len(tuteeForm)):
 	rowRaw = tuteeForm[i]
+	if not rowRaw[0]:
+		continue
 	row = TuteeRow(rowRaw, i)
 	tuteeRows.append(row)
 	# print(f'Loaded an entry for {row.name} filled at {rowRaw[0]}')
