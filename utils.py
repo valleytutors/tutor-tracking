@@ -2,29 +2,26 @@ from config import NEEDED_MATCHING_RATIO
 from difflib import SequenceMatcher
 
 def getMatchRatio(s, ss):
-	matcher = SequenceMatcher(None, s.lower(), ss.lower())
-	return matcher.ratio()
+    matcher = SequenceMatcher(None, s.lower(), ss.lower())
+    return matcher.ratio()
 
 def checkName(s, ss, ratio=NEEDED_MATCHING_RATIO): 
-	if s.lower() == ss.lower():
-		return True
-	elif getMatchRatio(s, ss) > ratio:
-		return True
-	return False
+    if s.lower() == ss.lower():
+        return True
+    elif getMatchRatio(s, ss) > ratio:
+        return True
+    return False
 
-def checkInName(part, full, firstWord=True): 
-	part = part.lower()
-	full = full.lower()
-	if checkName(part, full):
-		return True
+def checkInName(one, two, firstWord=True): 
+    one = one.lower().split()
+    two = two.lower().split()
+    length = min(len(one), len(two))
+    
+    r = 0
+    for i in range(length):
+        if checkName(one[i], two[i]):
+            r += 1
 
-	if firstWord:
-		(part, *_) = part.split(maxsplit=1)
+    return (r == length and r != 0)
 
-	if part in full:
-		return True
-	for word in full.split():
-		if getMatchRatio(part, word) > NEEDED_MATCHING_RATIO:
-			return True
-	return False
-		
+
