@@ -2,6 +2,9 @@
 *report*
 *.csv
 
+# Don't share email sending code
+sendemail.py
+
 # Private data files
 *.json
 config.py
