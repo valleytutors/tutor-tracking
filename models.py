@@ -5,44 +5,42 @@ import requests
 import time
 from remote import getTutor
 
-class TutorRow:
-    indexes = {}
-    def __init__(self, row, rowNumber):
-        c = TutorRow.indexes
-        getKey = lambda k: row[c[k]] if k in c else None
+class BaseRow:
+    def __init__(self, row, rowNumber, indexes):
         self.rawRow = row
-        self.name = getKey('name')
-        self.tutee = getKey('tutee')
-        self.length = int(getKey('length'))
-        self.rating = int(getKey('rating'))
-        self.completion = getKey('completion') == "Meeting Was Completed"
-        self.timestamp = getKey('timestamp')
-        self.date = getKey('date')
+        self.indexes = indexes
+        self.name = self.getKey('name')
+        self.rating = self.getKey('rating', convert=int)
+        self.timestamp = self.getKey('timestamp')
+        self.date = self.getKey('date')
         self.rowNumber = rowNumber
+
+    def getKey(self, key, convert=lambda i: i):
+        c = self.indexes
+        try:
+            print("getting key " + key)
+            return convert(self.rawRow[c[key]]) if key in c else None
+        except ValueError:
+            print(f"Error while getting '{key}' from {self.rawRow}")
     
     def __str__(self):
         return str(self.rawRow)
 
-class TuteeRow:
-    indexes = {}
-    def __init__(self, row, rowNumber):
-        c = TuteeRow.indexes
-        getKey = lambda k: row[c[k]] if k in c else None
-        self.rawRow = row
-        self.name = getKey('name')
-        self.tutor = getKey('tutor')
-        self.length = getKey('length')
-        self.rating = int(getKey('rating'))
-        self.completion = getKey('completion') == "The meeting was complete"
-        self.timestamp = getKey('timestamp')
-        self.date = getKey('date')
-        self.wentWell = getKey('wentWell')
-        self.improvements = getKey('improvements')
-        self.rowNumber = rowNumber
+class TutorRow(BaseRow):
+    def __init__(self, row, rowNumber, indexes):
+        super().__init__(row, rowNumber, indexes)
+        self.tutee = self.getKey('tutee')
+        self.length = self.getKey('length', convert=int)
+        self.completion = self.getKey('completion') == "Meeting Was Completed"
 
-    def __str__(self):
-        return str(self.rawRow)
-
+class TuteeRow(BaseRow):
+    def __init__(self, row, rowNumber, indexes):
+        super().__init__(row, rowNumber, indexes)
+        self.tutor = self.getKey('tutor')
+        self.length = self.getKey('length')
+        self.completion = self.getKey('completion') == "The meeting was complete"
+        self.wentWell = self.getKey('wentWell')
+        self.improvements = self.getKey('improvements')
 
 class Tutor:
     def __init__(self, name):
@@ -176,6 +174,5 @@ class Tutor:
         avg = (sum(ratings)+self.prevRating*self.prevCount)/self.count
         return avg
     """
-
 
 
