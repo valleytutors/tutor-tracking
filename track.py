@@ -1,4 +1,5 @@
-from utils import getMatchRatio, checkName, checkInName
+from utils import getMatchRatio, \
+    checkName, checkInName, checkOne
 from sheets import tuteeForm, tutorForm, \
     tutorIndexes, tuteeIndexes
 import sheets
@@ -11,30 +12,29 @@ import sys
 tutors = []
 
 tutorRows = []
-TutorRow.indexes = tutorIndexes
 # print("Loading Tutors")
-for i in range(lastRow()+1, len(tutorForm)):
+for i in range(1, len(tutorForm)):
     rowRaw = tutorForm[i]
     if not rowRaw[0]:
         continue
-    row = TutorRow(rowRaw, i)
+    row = TutorRow(rowRaw, i, tutorIndexes)
     tutorRows.append(row)
     # print(f'Loaded an entry for {row.name} filled at {rowRaw[0]}')
 
 tuteeRows = []
-TuteeRow.indexes = tuteeIndexes
 # print("Loading Tutees")
 for i in range(1, len(tuteeForm)):
     rowRaw = tuteeForm[i]
     if not rowRaw[0]:
         continue
-    row = TuteeRow(rowRaw, i)
+    row = TuteeRow(rowRaw, i, tuteeIndexes)
     tuteeRows.append(row)
     # print(f'Loaded an entry for {row.name} filled at {rowRaw[0]}')
 
 def getTutor(name):
     chances = [tutor for tutor in tutors \
-        if checkName(tutor.name, name)]
+                if checkInName(tutor.name, name)]
+
     if not chances:
         tutor = Tutor(name) 
         tutors.append(tutor)
@@ -58,8 +58,8 @@ def findTuteeRow(tutor, entry):
     #   of each other(config.NEEDED_TIMESTAMP_DIFF)
     (entryCount, entry) = entry
     allChances = [tuteeRow for tuteeRow in tuteeRows \
-        if checkInName(tutor.name, tuteeRow.tutor) and \
-        checkInName(tuteeRow.name, entry.tutee)]
+        if checkOne(tutor.name.split()[0], tuteeRow.tutor) and \
+        checkOne(tuteeRow.name.split()[0], entry.tutee)]
     if not allChances:
         return None
 
@@ -156,6 +156,7 @@ def trackTutors():
     # print("But the program can usually deal with most spelling errors")
     
     # This is where the Tracking logic goes
+
     for tutorRow in tutorRows:
         tutor = getTutor(tutorRow.name)
         tutorEntry = tutor.addTutorEntry(tutorRow)
@@ -178,9 +179,8 @@ def trackTutors():
         if countHours:
             print("hours counted")
             tutor.addHours(tutorRow.length)
-        if tuteeRow:
-            print(f"adding info to {tutor.page}")
-            tutor.addTuteeEntry(tuteeRow)
+            if tuteeRow:
+                tutor.addTuteeEntry(tuteeRow)
 
         # else:
         #     if tuteeRow:
@@ -191,4 +191,3 @@ def trackTutors():
         #             tutor.addTuteeEntry(tuteeRow)
 
         tutor.save()
-        lastRow(lastRow()+1)

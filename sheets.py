@@ -23,8 +23,8 @@ tutorSHHeaders = tutorForm[0]
 tuteeSHHeaders = tuteeForm[0]
 
 specialDataFiles = [ "LAST_ROW" ]
-lastRowFile = f'{config.LOCAL_DATA_FOLDER}/LAST_ROW'
-open(lastRowFile, 'a').close()
+# lastRowFile = f'{config.LOCAL_DATA_FOLDER}/LAST_ROW'
+# open(lastRowFile, 'a').close()
 
 tutorIndexes = {}
 for value, header in config.TUTOR_HEADERS.items():
@@ -52,24 +52,24 @@ def getTutorSheet(name):
 # this makes it so tutorsheets only calls sheets api when something changes
 getTutorSheet.ctsheets = tutorSheets.get_all_values()
 
-if not os.path.exists(config.LOCAL_DATA_FOLDER):
-    os.makedirs(config.LOCAL_DATA_FOLDER)
-
-def getLocalSheet(name):
-    getSF = lambda n: f"{config.LOCAL_DATA_FOLDER}/{n}"
-    for filename in os.listdir(config.LOCAL_DATA_FOLDER):
-        if checkInName(filename, name):
-            return getSF(filename)
-
-    initCells = [['Hours:', '', 'Average Rating:', ''], \
-    [], \
-    ['Good Comments', '', 'Areas of Improvement']]
-    rawsf = getSF(name)
-    with open(rawsf, 'w') as sf:
-        writer = csv.writer(sf)
-        writer.writerows(initCells)
-
-    return rawsf
+# if not os.path.exists(config.LOCAL_DATA_FOLDER):
+#     os.makedirs(config.LOCAL_DATA_FOLDER)
+# 
+# def getLocalSheet(name):
+#     getSF = lambda n: f"{config.LOCAL_DATA_FOLDER}/{n}"
+#     for filename in os.listdir(config.LOCAL_DATA_FOLDER):
+#         if checkInName(filename, name):
+#             return getSF(filename)
+# 
+#     initCells = [['Hours:', '', 'Average Rating:', ''], \
+#     [], \
+#     ['Good Comments', '', 'Areas of Improvement']]
+#     rawsf = getSF(name)
+#     with open(rawsf, 'w') as sf:
+#         writer = csv.writer(sf)
+#         writer.writerows(initCells)
+# 
+#     return rawsf
 
 """
 Google sheets api has a usage quota limit:
@@ -84,7 +84,7 @@ _runDataFunc can run some function through a list
 and make sure the limit is not exceeded.
 _loadData and _saveData are those functions which are run.
 loadData and saveData are the exposed functions which run.py uses.
-"""
+
 def _runDataFunc(f, records):
     rcount = 0
     wcount = 0
@@ -152,3 +152,4 @@ def saveData():
     with open(lastRowFile, 'r') as cfile:
         mainData.update_cell(1, 2, cfile.read())
     _runDataFunc(_saveData, records)
+"""

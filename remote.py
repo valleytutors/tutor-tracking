@@ -11,7 +11,7 @@ dataPage = client.get_block(config.NOTION_DATA_PAGE)
 lastRowBlock = dataPage.children[1]
 
 def lastRow(n=None):
-    if n:
+    if n != None:
         lastRowBlock.title = n
     else:
         return int(lastRowBlock.title)

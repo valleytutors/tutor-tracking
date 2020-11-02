@@ -12,7 +12,7 @@ def checkName(s, ss, ratio=NEEDED_MATCHING_RATIO):
         return True
     return False
 
-def checkInName(one, two, firstWord=True): 
+def checkInName(one, two): 
     one = one.lower().split()
     two = two.lower().split()
     length = min(len(one), len(two))
@@ -23,5 +23,11 @@ def checkInName(one, two, firstWord=True):
             r += 1
 
     return (r == length and r != 0)
+
+def checkOne(one, full):
+    for word in full.split():
+        if checkName(one, word):
+            return True
+    return False
 
 
