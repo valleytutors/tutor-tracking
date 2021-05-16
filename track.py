@@ -12,8 +12,10 @@ import sys
 tutors = []
 
 tutorRows = []
+
+startRow = int(input("What row to start tracking from(enter exact row number in spreadsheet)? "))
 # print("Loading Tutors")
-for i in range(1, len(tutorForm)):
+for i in range(startRow, len(tutorForm)):
     rowRaw = tutorForm[i]
     if not rowRaw[0]:
         continue
@@ -36,7 +38,10 @@ def getTutor(name):
                 if checkInName(tutor.name, name)]
 
     if not chances:
-        tutor = Tutor(name) 
+        try:
+            tutor = Tutor(name) 
+        except NameError:
+            return None
         tutors.append(tutor)
         return tutor
     elif len(chances) == 1:
@@ -159,6 +164,10 @@ def trackTutors():
 
     for tutorRow in tutorRows:
         tutor = getTutor(tutorRow.name)
+        if not tutor:
+            print(f"Can't find tutor for {tutorRow.name}, skipping this row")
+            continue
+
         tutorEntry = tutor.addTutorEntry(tutorRow)
         tuteeRow = findTuteeRow(tutor, tutorEntry)
         countHours = confirmHours(tutor, tutorRow, tuteeRow)

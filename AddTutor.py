@@ -2,6 +2,7 @@ import gspread
 from notion.client import NotionClient
 import gspread_formatting
 import config
+import datl
 
 #NotionClient initializations
 client = NotionClient(token_v2=config.NOTION_AUTH_TOKEN)
